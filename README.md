@@ -2,6 +2,8 @@
 
 A lightweight WPF application that automatically toggles Windows color filters based on the active window. Perfect for reducing eye strain or creating a distraction-free workflow by automatically switching between grayscale and color modes.
 
+<img width="780" height="580" alt="Capture" src="https://github.com/user-attachments/assets/338703d0-ebd9-4805-8ee3-55947b2c8b47" />
+
 ## Features
 
 - **Automatic Mode Switching** — Toggles grayscale filter based on the active application window

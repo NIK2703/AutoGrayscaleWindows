@@ -1,6 +1,6 @@
 # Auto Grayscale Windows
 
-A lightweight WPF application that automatically toggles Windows color filters based on the active window. Perfect for reducing eye strain or creating a distraction-free workflow by automatically switching between grayscale and color modes.
+A lightweight application that automatically toggles Windows color filters based on the active window. Perfect for reducing eye strain or creating a distraction-free workflow by automatically switching between grayscale and color modes.
 
 <img width="780" height="580" alt="Capture" src="https://github.com/user-attachments/assets/338703d0-ebd9-4805-8ee3-55947b2c8b47" />
 
@@ -8,7 +8,7 @@ A lightweight WPF application that automatically toggles Windows color filters b
 
 - **Automatic Mode Switching** — Toggles grayscale filter based on the active application window
 - **Whitelist/Blacklist Modes** — Configure which apps should trigger grayscale or stay in color
-- **Flexible Matching Rules** — Match apps by executable path, or window title with support for exact, substring, or regex patterns
+- **Flexible Matching Rules** — Match apps by executable path, or window title with support for substring pattern
 
 - Windows 10 version 1703 (build 15063) or later
 - [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
@@ -21,8 +21,8 @@ The application monitors the active window and evaluates user-defined rules to d
 
 | Mode | Behavior |
 |------|----------|
-| **Blacklist** (default) | Apps in the list stay in color; everything else is grayscale |
-| **Whitelist** | Apps in the list become grayscale; everything else stays in color |
+| **Color list** (default) | Apps in the list stay in color; everything else is grayscale |
+| **Grayscale list** | Apps in the list become grayscale; everything else stays in color |
 
 ### Rule Matching
 

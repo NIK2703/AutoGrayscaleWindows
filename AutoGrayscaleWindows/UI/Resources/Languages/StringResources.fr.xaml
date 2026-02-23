@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Main Window -->
+    <system:String x:Key="AppTitle">Auto Grayscale Windows</system:String>
+    
+    <!-- Settings -->
+    <system:String x:Key="SettingsTitle">Paramètres</system:String>
+    <system:String x:Key="EnableMonitoring">Activer la surveillance</system:String>
+    <system:String x:Key="AutoStart">Démarrer avec Windows</system:String>
+    <system:String x:Key="MinimizeToTray">Réduire dans la barre d'état à la fermeture</system:String>
+    
+    <!-- Rules -->
+    <system:String x:Key="RulesTitle">Règles</system:String>
+    <system:String x:Key="ColorListMode">Liste en couleur</system:String>
+    <system:String x:Key="GrayListMode">Liste en niveaux de gris</system:String>
+    
+    <!-- Rules Table -->
+    <system:String x:Key="ColumnActive">Act.</system:String>
+    <system:String x:Key="ColumnPattern">Motif</system:String>
+    <system:String x:Key="ColumnMode">Mode</system:String>
+    <system:String x:Key="ExecutableFile">Fichier exécutable</system:String>
+    <system:String x:Key="WindowTitle">Titre de la fenêtre</system:String>
+    
+    <!-- Buttons -->
+    <system:String x:Key="AddRule">+ Ajouter une règle</system:String>
+    <system:String x:Key="BrowseApp">Parcourir l'application via l'explorateur</system:String>
+    <system:String x:Key="DeleteRule">Supprimer la règle</system:String>
+    
+    <!-- Context Menu -->
+    <system:String x:Key="Duplicate">Dupliquer</system:String>
+    <system:String x:Key="ToggleEnable">Activer/Désactiver</system:String>
+    <system:String x:Key="Delete">Supprimer</system:String>
+    
+    <!-- Tray -->
+    <system:String x:Key="TrayOpen">Ouvrir</system:String>
+    <system:String x:Key="TrayMonitoring">Surveillance</system:String>
+    <system:String x:Key="TrayMonitoringEnabled">Surveillance activée</system:String>
+    <system:String x:Key="TrayPaused">En pause</system:String>
+    <system:String x:Key="TrayMonitoringStopped">Surveillance arrêtée</system:String>
+    <system:String x:Key="TrayGrayscaleOn">Niveaux de gris: ON</system:String>
+    <system:String x:Key="TrayGrayscaleOff">Niveaux de gris: OFF</system:String>
+    <system:String x:Key="TraySettings">Paramètres...</system:String>
+    <system:String x:Key="TrayExit">Quitter</system:String>
+    
+</ResourceDictionary>

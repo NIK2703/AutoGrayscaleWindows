@@ -1,0 +1,32 @@
+﻿<Application x:Class="AutoGrayscaleWindows.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AutoGrayscaleWindows"
+             xmlns:converters="clr-namespace:AutoGrayscaleWindows.UI.Converters"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- WPF-UI Темы -->
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
+                
+                <!-- Свои стили -->
+                <ResourceDictionary Source="UI/Resources/Styles.xaml"/>
+                
+                <!-- Локализация (по умолчанию русский) -->
+                <ResourceDictionary Source="UI/Resources/Languages/StringResources.ru.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Глобальные конвертеры -->
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <converters:BoolToStatusColorConverter x:Key="BoolToStatusColorConverter"/>
+            <converters:BoolToStatusTextConverter x:Key="BoolToStatusTextConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:RuleActionToDescriptionConverter x:Key="RuleActionToDescriptionConverter"/>
+            <converters:MatchTypeToDescriptionConverter x:Key="MatchTypeToDescriptionConverter"/>
+            <converters:RuleActionToIconConverter x:Key="RuleActionToIconConverter"/>
+            <converters:RuleActionToColorConverter x:Key="RuleActionToColorConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

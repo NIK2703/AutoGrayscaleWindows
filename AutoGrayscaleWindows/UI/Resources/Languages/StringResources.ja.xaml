@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Main Window -->
+    <system:String x:Key="AppTitle">自動グレースケール Windows</system:String>
+    
+    <!-- Settings -->
+    <system:String x:Key="SettingsTitle">設定</system:String>
+    <system:String x:Key="EnableMonitoring">監視を有効にする</system:String>
+    <system:String x:Key="AutoStart">Windowsと共に起動</system:String>
+    <system:String x:Key="MinimizeToTray">閉じる時にトレイに最小化</system:String>
+    
+    <!-- Rules -->
+    <system:String x:Key="RulesTitle">ルール</system:String>
+    <system:String x:Key="ColorListMode">カラーリスト</system:String>
+    <system:String x:Key="GrayListMode">グレースケールリスト</system:String>
+    
+    <!-- Rules Table -->
+    <system:String x:Key="ColumnActive">有効</system:String>
+    <system:String x:Key="ColumnPattern">パターン</system:String>
+    <system:String x:Key="ColumnMode">モード</system:String>
+    <system:String x:Key="ExecutableFile">実行可能ファイル</system:String>
+    <system:String x:Key="WindowTitle">ウィンドウタイトル</system:String>
+    
+    <!-- Buttons -->
+    <system:String x:Key="AddRule">+ ルールを追加</system:String>
+    <system:String x:Key="BrowseApp">エクスプローラーでアプリケーションを参照</system:String>
+    <system:String x:Key="DeleteRule">ルールを削除</system:String>
+    
+    <!-- Context Menu -->
+    <system:String x:Key="Duplicate">複製</system:String>
+    <system:String x:Key="ToggleEnable">有効/無効</system:String>
+    <system:String x:Key="Delete">削除</system:String>
+    
+    <!-- Tray -->
+    <system:String x:Key="TrayOpen">開く</system:String>
+    <system:String x:Key="TrayMonitoring">監視</system:String>
+    <system:String x:Key="TrayMonitoringEnabled">監視有効</system:String>
+    <system:String x:Key="TrayPaused">一時停止</system:String>
+    <system:String x:Key="TrayMonitoringStopped">監視停止</system:String>
+    <system:String x:Key="TrayGrayscaleOn">グレースケール: ON</system:String>
+    <system:String x:Key="TrayGrayscaleOff">グレースケール: OFF</system:String>
+    <system:String x:Key="TraySettings">設定...</system:String>
+    <system:String x:Key="TrayExit">終了</system:String>
+    
+</ResourceDictionary>

@@ -1,0 +1,68 @@
+<Window x:Class="AutoGrayscaleWindows.UI.Views.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="О программе" 
+        Height="320" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Style="{StaticResource WindowBaseStyle}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" 
+                   Text="Auto Grayscale Windows"
+                   Style="{StaticResource HeaderLargeStyle}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,8"/>
+
+        <!-- Версия -->
+        <TextBlock Grid.Row="1" 
+                   Name="VersionTextBlock"
+                   Text="Версия 1.0.0"
+                   Style="{StaticResource SecondaryTextStyle}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+
+        <!-- Описание -->
+        <TextBlock Grid.Row="2" 
+                   TextWrapping="Wrap"
+                   TextAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Style="{StaticResource BodyTextStyle}">
+            Автоматическое управление режимом оттенков серого&#10;для Windows 10/11 на основе активного окна.
+        </TextBlock>
+
+        <!-- Ссылки -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Vertical" 
+                    HorizontalAlignment="Center"
+                    Margin="0,16,0,0">
+            <TextBlock Style="{StaticResource SecondaryTextStyle}" HorizontalAlignment="Center">
+                <Run Text="© 2024 Auto Grayscale Windows"/>
+            </TextBlock>
+            
+            <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center">
+                <Hyperlink NavigateUri="https://github.com/example/auto-grayscale-windows" 
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    GitHub
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Кнопка закрытия -->
+        <Button Grid.Row="4" 
+                Content="Закрыть"
+                Width="100"
+                Style="{StaticResource PrimaryButton}"
+                HorizontalAlignment="Center"
+                Margin="0,16,0,0"
+                Click="CloseButton_Click"/>
+    </Grid>
+</Window>

@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Main Window -->
+    <system:String x:Key="AppTitle">Auto Grayscale Windows</system:String>
+    
+    <!-- Settings -->
+    <system:String x:Key="SettingsTitle">Einstellungen</system:String>
+    <system:String x:Key="EnableMonitoring">Überwachung aktivieren</system:String>
+    <system:String x:Key="AutoStart">Mit Windows starten</system:String>
+    <system:String x:Key="MinimizeToTray">Beim Schließen in Taskleiste minimieren</system:String>
+    
+    <!-- Rules -->
+    <system:String x:Key="RulesTitle">Regeln</system:String>
+    <system:String x:Key="ColorListMode">Farbliste</system:String>
+    <system:String x:Key="GrayListMode">Graustufenliste</system:String>
+    
+    <!-- Rules Table -->
+    <system:String x:Key="ColumnActive">Akt.</system:String>
+    <system:String x:Key="ColumnPattern">Muster</system:String>
+    <system:String x:Key="ColumnMode">Modus</system:String>
+    <system:String x:Key="ExecutableFile">Ausführbare Datei</system:String>
+    <system:String x:Key="WindowTitle">Fenstertitel</system:String>
+    
+    <!-- Buttons -->
+    <system:String x:Key="AddRule">+ Regel hinzufügen</system:String>
+    <system:String x:Key="BrowseApp">Anwendung über Explorer durchsuchen</system:String>
+    <system:String x:Key="DeleteRule">Regel löschen</system:String>
+    
+    <!-- Context Menu -->
+    <system:String x:Key="Duplicate">Duplizieren</system:String>
+    <system:String x:Key="ToggleEnable">Aktivieren/Deaktivieren</system:String>
+    <system:String x:Key="Delete">Löschen</system:String>
+    
+    <!-- Tray -->
+    <system:String x:Key="TrayOpen">Öffnen</system:String>
+    <system:String x:Key="TrayMonitoring">Überwachung</system:String>
+    <system:String x:Key="TrayMonitoringEnabled">Überwachung aktiviert</system:String>
+    <system:String x:Key="TrayPaused">Pausiert</system:String>
+    <system:String x:Key="TrayMonitoringStopped">Überwachung gestoppt</system:String>
+    <system:String x:Key="TrayGrayscaleOn">Graustufen: AN</system:String>
+    <system:String x:Key="TrayGrayscaleOff">Graustufen: AUS</system:String>
+    <system:String x:Key="TraySettings">Einstellungen...</system:String>
+    <system:String x:Key="TrayExit">Beenden</system:String>
+    
+</ResourceDictionary>

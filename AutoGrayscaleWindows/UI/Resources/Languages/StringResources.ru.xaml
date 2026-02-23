@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Главное окно -->
+    <system:String x:Key="AppTitle">Auto Grayscale Windows</system:String>
+    
+    <!-- Настройки -->
+    <system:String x:Key="SettingsTitle">Настройки</system:String>
+    <system:String x:Key="EnableMonitoring">Включить мониторинг</system:String>
+    <system:String x:Key="AutoStart">Запускать с Windows</system:String>
+    <system:String x:Key="MinimizeToTray">Сворачивать в трей при закрытии</system:String>
+    
+    <!-- Правила -->
+    <system:String x:Key="RulesTitle">Правила</system:String>
+    <system:String x:Key="ColorListMode">Список цветных</system:String>
+    <system:String x:Key="GrayListMode">Список серых</system:String>
+    
+    <!-- Таблица правил -->
+    <system:String x:Key="ColumnActive">Акт.</system:String>
+    <system:String x:Key="ColumnPattern">Паттерн</system:String>
+    <system:String x:Key="ColumnMode">Режим</system:String>
+    <system:String x:Key="ExecutableFile">Исполняемый файл</system:String>
+    <system:String x:Key="WindowTitle">Заголовок окна</system:String>
+    
+    <!-- Кнопки -->
+    <system:String x:Key="AddRule">+ Добавить правило</system:String>
+    <system:String x:Key="BrowseApp">Выбрать приложение через проводник</system:String>
+    <system:String x:Key="DeleteRule">Удалить правило</system:String>
+    
+    <!-- Контекстное меню -->
+    <system:String x:Key="Duplicate">Дублировать</system:String>
+    <system:String x:Key="ToggleEnable">Включить/Выключить</system:String>
+    <system:String x:Key="Delete">Удалить</system:String>
+    
+    <!-- Трей -->
+    <system:String x:Key="TrayOpen">Открыть</system:String>
+    <system:String x:Key="TrayMonitoring">Мониторинг</system:String>
+    <system:String x:Key="TrayMonitoringEnabled">Мониторинг включён</system:String>
+    <system:String x:Key="TrayPaused">Приостановлено</system:String>
+    <system:String x:Key="TrayMonitoringStopped">Мониторинг остановлен</system:String>
+    <system:String x:Key="TrayGrayscaleOn">Grayscale: ВКЛ</system:String>
+    <system:String x:Key="TrayGrayscaleOff">Grayscale: ВЫКЛ</system:String>
+    <system:String x:Key="TraySettings">Настройки...</system:String>
+    <system:String x:Key="TrayExit">Выход</system:String>
+    
+</ResourceDictionary>

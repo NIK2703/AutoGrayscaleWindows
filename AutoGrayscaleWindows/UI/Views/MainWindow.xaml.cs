@@ -212,6 +212,7 @@ public partial class MainWindow : FluentWindow
         var columnMode = LocalizationManager.GetString("ColumnMode");
         var executableFile = LocalizationManager.GetString("ExecutableFile");
         var windowTitle = LocalizationManager.GetString("WindowTitle");
+        var windowClass = LocalizationManager.GetString("WindowClass");
         var browseApp = LocalizationManager.GetString("BrowseApp");
         var deleteRule = LocalizationManager.GetString("DeleteRule");
         
@@ -240,11 +241,7 @@ public partial class MainWindow : FluentWindow
             factory.SetValue(ComboBox.BackgroundProperty, System.Windows.Media.Brushes.Transparent);
             factory.AddHandler(ComboBox.SelectionChangedEvent, new SelectionChangedEventHandler(RuleComboBox_SelectionChanged));
             
-            var comboBox = new ComboBox();
-            comboBox.Items.Add(new ComboBoxItem { Content = executableFile });
-            comboBox.Items.Add(new ComboBoxItem { Content = windowTitle });
-            
-            factory.SetValue(ComboBox.ItemsSourceProperty, new[] { executableFile, windowTitle });
+            factory.SetValue(ComboBox.ItemsSourceProperty, new[] { executableFile, windowTitle, windowClass });
             
             cellTemplate.VisualTree = factory;
             modeColumn.CellTemplate = cellTemplate;

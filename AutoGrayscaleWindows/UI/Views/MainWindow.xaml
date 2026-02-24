@@ -102,7 +102,7 @@
                     </Grid>
                     
                     <!-- Вторая строка: Сворачивать в трей и Запускать с Windows -->
-                    <Grid Grid.Row="2">
+                    <Grid Grid.Row="2" Margin="0,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -245,6 +245,7 @@
                                                   SelectionChanged="RuleComboBox_SelectionChanged">
                                             <ComboBoxItem Content="{DynamicResource ExecutableFile}"/>
                                             <ComboBoxItem Content="{DynamicResource WindowTitle}"/>
+                                            <ComboBoxItem Content="{DynamicResource WindowClass}"/>
                                         </ComboBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

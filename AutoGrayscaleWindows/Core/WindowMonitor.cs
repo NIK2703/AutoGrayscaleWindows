@@ -37,6 +37,10 @@ public class WindowMonitor : IDisposable
     private bool _disposed;
     private readonly Dispatcher _dispatcher;
     
+    // Таймер для периодической проверки foreground окна (для обнаружения рабочего стола)
+    private DispatcherTimer? _pollingTimer;
+    private readonly TimeSpan _pollingInterval = TimeSpan.FromMilliseconds(500);
+    
     // Кэш информации об окнах
     private readonly ConcurrentDictionary<int, WindowInfo> _windowInfoCache = new();
     private readonly ConcurrentDictionary<int, DateTime> _cacheTimestamps = new();
@@ -137,6 +141,13 @@ public class WindowMonitor : IDisposable
             }
 
             _isRunning = true;
+            
+            // Запускаем таймер для периодической проверки (для обнаружения рабочего стола)
+            _pollingTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher);
+            _pollingTimer.Interval = _pollingInterval;
+            _pollingTimer.Tick += OnPollingTimerTick;
+            _pollingTimer.Start();
+            
             Log.Information("WindowMonitor запущен. Foreground hook: {ForegroundHook}, NameChange hook: {NameChangeHook}", 
                 _foregroundHookHandle, _nameChangeHookHandle);
             return true;
@@ -158,6 +169,14 @@ public class WindowMonitor : IDisposable
 
         try
         {
+            // Останавливаем таймер
+            if (_pollingTimer != null)
+            {
+                _pollingTimer.Stop();
+                _pollingTimer.Tick -= OnPollingTimerTick;
+                _pollingTimer = null;
+            }
+
             if (_foregroundHookHandle != nint.Zero)
             {
                 WinAPI.UnhookWinEvent(_foregroundHookHandle);
@@ -206,10 +225,14 @@ public class WindowMonitor : IDisposable
             // Получаем информацию об окне
             var windowInfo = GetWindowInfo(hwnd);
             
-            // Фильтрация системных окон
-            if (FilterSystemWindows && windowInfo.IsSystemWindow)
+            // Логируем все окна для отладки определения рабочего стола
+            Log.Debug("Foreground окно: Process={Process}, Class={Class}, Title={Title}, IsDesktop={IsDesktop}, IsSystem={IsSystem}",
+                windowInfo.ProcessName, windowInfo.WindowClass, windowInfo.WindowTitle, windowInfo.IsDesktop, windowInfo.IsSystemWindow);
+            
+            // Фильтрация системных окон (но НЕ рабочего стола - он обрабатывается отдельно)
+            if (FilterSystemWindows && windowInfo.IsSystemWindow && !windowInfo.IsDesktop)
             {
-                Log.Debug("Пропуск системного окна: {ProcessName} ({WindowClass})", 
+                Log.Debug("Пропуск системного окна: {ProcessName} ({WindowClass})",
                     windowInfo.ProcessName, windowInfo.WindowClass);
                 return;
             }
@@ -278,10 +301,10 @@ public class WindowMonitor : IDisposable
             // Получаем информацию об окне
             var windowInfo = GetWindowInfo(hwnd);
             
-            // Фильтрация системных окон
-            if (FilterSystemWindows && windowInfo.IsSystemWindow)
+            // Фильтрация системных окон (но НЕ рабочего стола - он обрабатывается отдельно)
+            if (FilterSystemWindows && windowInfo.IsSystemWindow && !windowInfo.IsDesktop)
             {
-                Log.Debug("Пропуск системного окна при изменении заголовка: {ProcessName} ({WindowClass})", 
+                Log.Debug("Пропуск системного окна при изменении заголовка: {ProcessName} ({WindowClass})",
                     windowInfo.ProcessName, windowInfo.WindowClass);
                 return;
             }
@@ -312,6 +335,54 @@ public class WindowMonitor : IDisposable
     }
 
     /// <summary>
+    /// Обработчик тика таймера для периодической проверки foreground окна
+    /// Используется для обнаружения рабочего стола, который не всегда генерирует события
+    /// </summary>
+    private void OnPollingTimerTick(object? sender, EventArgs e)
+    {
+        try
+        {
+            var foregroundHwnd = WinAPI.GetForegroundWindow();
+            if (foregroundHwnd == nint.Zero)
+                return;
+
+            // Получаем информацию об окне
+            var windowInfo = GetWindowInfo(foregroundHwnd);
+            
+            // Проверяем, изменилось ли окно
+            if (foregroundHwnd == _lastWindowHandle)
+                return;
+            
+            // Debounce
+            var now = DateTime.Now;
+            if ((now - _lastEventTime) < _debounceInterval)
+                return;
+
+            _lastWindowHandle = foregroundHwnd;
+            _lastEventTime = now;
+            _lastWindowTitle = windowInfo.WindowTitle;
+
+            // Фильтрация системных окон (но НЕ рабочего стола)
+            if (FilterSystemWindows && windowInfo.IsSystemWindow && !windowInfo.IsDesktop)
+                return;
+
+            Log.Debug("Polling: обнаружена смена окна: {ProcessName} ({WindowClass}), IsDesktop={IsDesktop}",
+                windowInfo.ProcessName, windowInfo.WindowClass, windowInfo.IsDesktop);
+
+            // Генерируем событие
+            WindowChanged?.Invoke(this, new WindowChangedEventArgs
+            {
+                WindowInfo = windowInfo,
+                Timestamp = now
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Ошибка при polling проверке окна");
+        }
+    }
+
+    /// <summary>
     /// Получает информацию об окне с кэшированием
     /// </summary>
     /// <param name="hWnd">Дескриптор окна</param>
@@ -321,18 +392,23 @@ public class WindowMonitor : IDisposable
         // Получаем ID процесса для проверки кэша
         uint processId = WinAPI.GetProcessIdFromWindow(hWnd);
         
-        // Проверяем кэш
-        if (EnableCaching && processId > 0)
+        // Используем hWnd как ключ кэша, чтобы различать разные окна одного процесса
+        int cacheKey = hWnd.ToInt32();
+        
+        // Проверяем кэш (короткий TTL для быстрого реагирования на смену окна)
+        if (EnableCaching && cacheKey != 0)
         {
-            if (_windowInfoCache.TryGetValue((int)processId, out var cachedInfo))
+            if (_windowInfoCache.TryGetValue(cacheKey, out var cachedInfo))
             {
-                if (_cacheTimestamps.TryGetValue((int)processId, out var cacheTime))
+                if (_cacheTimestamps.TryGetValue(cacheKey, out var cacheTime))
                 {
-                    if (DateTime.Now - cacheTime < _cacheTtl)
+                    // Уменьшенный TTL для более точного определения класса окна
+                    if (DateTime.Now - cacheTime < TimeSpan.FromSeconds(5))
                     {
-                        // Обновляем дескриптор и заголовок (они могли измениться)
+                        // Обновляем дескриптор, заголовок и класс окна (они могли измениться)
                         cachedInfo.Handle = hWnd;
                         cachedInfo.WindowTitle = WinAPI.GetWindowTitle(hWnd);
+                        cachedInfo.WindowClass = WinAPI.GetWindowClassName(hWnd);
                         cachedInfo.Timestamp = DateTime.Now;
                         return cachedInfo;
                     }
@@ -343,11 +419,11 @@ public class WindowMonitor : IDisposable
         // Получаем полную информацию
         var info = BuildWindowInfo(hWnd, processId);
 
-        // Сохраняем в кэш
-        if (EnableCaching && processId > 0)
+        // Сохраняем в кэш с ключом hWnd
+        if (EnableCaching && cacheKey != 0)
         {
-            _windowInfoCache[(int)processId] = info;
-            _cacheTimestamps[(int)processId] = DateTime.Now;
+            _windowInfoCache[cacheKey] = info;
+            _cacheTimestamps[cacheKey] = DateTime.Now;
         }
 
         return info;

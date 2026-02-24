@@ -7,8 +7,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- WPF-UI Темы -->
-                <ui:ThemesDictionary Theme="Light" />
+                <!-- WPF-UI Темы (тема устанавливается программно в App.xaml.cs) -->
+                <ui:ThemesDictionary />
                 <ui:ControlsDictionary />
                 
                 <!-- Свои стили -->

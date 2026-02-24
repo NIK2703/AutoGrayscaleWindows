@@ -22,6 +22,7 @@
     <system:String x:Key="ColumnMode">モード</system:String>
     <system:String x:Key="ExecutableFile">実行可能ファイル</system:String>
     <system:String x:Key="WindowTitle">ウィンドウタイトル</system:String>
+    <system:String x:Key="WindowClass">ウィンドウクラス</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ ルールを追加</system:String>

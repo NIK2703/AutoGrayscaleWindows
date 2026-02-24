@@ -53,13 +53,20 @@ public class WindowInfo
         WindowClass.Contains("Windows.UI.Core.CoreWindow");
 
     /// <summary>
-    /// Признак того, что окно является системным (рабочий стол, панель задач)
+    /// Признак того, что окно является рабочим столом
+    /// </summary>
+    public bool IsDesktop =>
+        ProcessName.Contains("explorer", StringComparison.OrdinalIgnoreCase) &&
+        (WindowClass.Equals("Progman", StringComparison.OrdinalIgnoreCase) ||
+         WindowClass.Equals("WorkerW", StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Признак того, что окно является системным (панель задач и другие системные окна)
     /// </summary>
     public bool IsSystemWindow =>
         string.IsNullOrEmpty(ProcessName) ||
-        ProcessName.Equals("explorer", StringComparison.OrdinalIgnoreCase) && 
-        (WindowClass.Equals("Progman", StringComparison.OrdinalIgnoreCase) ||
-         WindowClass.Equals("WorkerW", StringComparison.OrdinalIgnoreCase) ||
+        IsDesktop ||
+        (ProcessName.Equals("explorer", StringComparison.OrdinalIgnoreCase) &&
          WindowClass.Equals("Shell_TrayWnd", StringComparison.OrdinalIgnoreCase)) ||
         ProcessName.Equals("System", StringComparison.OrdinalIgnoreCase) ||
         ProcessName.Equals("dwm", StringComparison.OrdinalIgnoreCase);

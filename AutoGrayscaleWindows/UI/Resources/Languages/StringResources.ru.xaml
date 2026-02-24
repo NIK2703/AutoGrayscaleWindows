@@ -22,6 +22,7 @@
     <system:String x:Key="ColumnMode">Режим</system:String>
     <system:String x:Key="ExecutableFile">Исполняемый файл</system:String>
     <system:String x:Key="WindowTitle">Заголовок окна</system:String>
+    <system:String x:Key="WindowClass">Класс окна</system:String>
     
     <!-- Кнопки -->
     <system:String x:Key="AddRule">+ Добавить правило</system:String>

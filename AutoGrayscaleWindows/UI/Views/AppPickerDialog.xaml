@@ -32,7 +32,7 @@
             
             <TextBlock Grid.Column="0"
                        Text="Поиск приложений..."
-                       Foreground="{StaticResource SecondaryGrayBrush}"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                        VerticalAlignment="Center"
                        Margin="12,0,0,0"
                        IsHitTestVisible="False"

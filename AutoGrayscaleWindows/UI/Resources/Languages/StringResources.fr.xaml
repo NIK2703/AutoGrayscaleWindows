@@ -22,6 +22,7 @@
     <system:String x:Key="ColumnMode">Mode</system:String>
     <system:String x:Key="ExecutableFile">Fichier exécutable</system:String>
     <system:String x:Key="WindowTitle">Titre de la fenêtre</system:String>
+    <system:String x:Key="WindowClass">Classe de fenêtre</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ Ajouter une règle</system:String>

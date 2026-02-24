@@ -22,6 +22,7 @@
     <system:String x:Key="ColumnMode">模式</system:String>
     <system:String x:Key="ExecutableFile">可执行文件</system:String>
     <system:String x:Key="WindowTitle">窗口标题</system:String>
+    <system:String x:Key="WindowClass">窗口类</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ 添加规则</system:String>

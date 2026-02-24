@@ -7,6 +7,7 @@ using AutoGrayscaleWindows.Services;
 using AutoGrayscaleWindows.UI.Views;
 using AutoGrayscaleWindows.Utils;
 using Serilog;
+using Wpf.Ui.Appearance;
 
 namespace AutoGrayscaleWindows;
 
@@ -30,6 +31,7 @@ public partial class App : Application
 
     // Состояние
     private bool _isMonitoringEnabled = true;
+    private bool _startMinimized = false;
 
     /// <summary>
     /// Точка входа приложения
@@ -38,12 +40,29 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // Проверяем аргументы командной строки
+        if (e.Args.Length > 0)
+        {
+            foreach (var arg in e.Args)
+            {
+                if (arg.Equals("--minimized", StringComparison.OrdinalIgnoreCase) ||
+                    arg.Equals("-minimized", StringComparison.OrdinalIgnoreCase))
+                {
+                    _startMinimized = true;
+                    Log.Information("Запуск в свёрнутом режиме (только трей)");
+                }
+            }
+        }
+
         // Инициализация логирования
 #if DEBUG
         LoggerSetup.Initialize(Serilog.Events.LogEventLevel.Debug);
 #else
         LoggerSetup.Initialize(Serilog.Events.LogEventLevel.Information);
 #endif
+
+        // Настройка темы приложения (следование за системной)
+        InitializeTheme();
 
         Log.Information("Запуск Auto Grayscale Windows v{Version}",
             System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
@@ -77,7 +96,19 @@ public partial class App : Application
             // Подписываемся на событие смены режима списка
             _mainWindow.ListModeChanged += (_, _) => ForceReevaluateCurrentWindow();
             
-            _mainWindow.Show();
+            // Показываем окно только если не запущены в свёрнутом режиме
+            if (!_startMinimized)
+            {
+                _mainWindow.Show();
+            }
+            else
+            {
+                // При запуске в свёрнутом режиме создаём дескриптор окна без его показа
+                // Это необходимо для работы хоткеев - окно не будет отображаться вообще
+                var helper = new WindowInteropHelper(_mainWindow);
+                helper.EnsureHandle(); // Создаёт дескриптор окна без показа окна
+                Log.Information("Приложение запущено в режиме трея (тихий запуск)");
+            }
 
             // Инициализация хоткеев с дескриптором окна
             InitializeHotkeys();
@@ -160,7 +191,6 @@ public partial class App : Application
         // События трея
         _trayIconManager!.OpenSettingsRequested += (_, _) => OpenMainWindow();
         _trayIconManager.ToggleGrayscaleRequested += (_, _) => ToggleGrayscale();
-        _trayIconManager.TogglePauseRequested += (_, _) => TogglePause();
         _trayIconManager.ToggleMonitoringRequested += (_, _) => ToggleMonitoring();
         _trayIconManager.ExitRequested += (_, _) => GracefulShutdown();
 
@@ -206,16 +236,20 @@ public partial class App : Application
         var handle = new WindowInteropHelper(_mainWindow).Handle;
         if (handle == nint.Zero)
         {
-            // Если окно ещё не показано, ждём
+            // Если дескриптор ещё не создан, ждём события SourceInitialized
             _mainWindow.SourceInitialized += (_, _) =>
             {
                 var h = new WindowInteropHelper(_mainWindow).Handle;
-                _hotkeyManager!.Initialize(h);
-                UpdateHotkeys();
+                if (h != nint.Zero)
+                {
+                    _hotkeyManager!.Initialize(h);
+                    UpdateHotkeys();
+                }
             };
         }
         else
         {
+            // Дескриптор уже создан (например, через EnsureHandle при тихом запуске)
             _hotkeyManager!.Initialize(handle);
             UpdateHotkeys();
         }
@@ -256,6 +290,11 @@ public partial class App : Application
             return;
 
         var config = _configManager.Config;
+        var windowInfo = e.WindowInfo;
+
+        // Логируем информацию об окне для отладки
+        Log.Debug("OnWindowChanged: Process={Process}, Class={Class}, Title={Title}, IsDesktop={IsDesktop}",
+            windowInfo.ProcessName, windowInfo.WindowClass, windowInfo.WindowTitle, windowInfo.IsDesktop);
 
         // Оцениваем правила немедленно, без задержки
         var result = _ruleEngine!.Evaluate(e.WindowInfo);
@@ -490,6 +529,9 @@ public partial class App : Application
     /// </summary>
     private void OpenMainWindow()
     {
+        // Обновляем тему в соответствии с системной при открытии окна
+        UpdateThemeFromSystem();
+
         if (_mainWindow != null)
         {
             if (_mainWindow.IsVisible)
@@ -545,5 +587,27 @@ public partial class App : Application
         LoggerSetup.CloseAndFlush();
 
         base.OnExit(e);
+    }
+
+    /// <summary>
+    /// Инициализация темы приложения (следование за системной)
+    /// </summary>
+    private static void InitializeTheme()
+    {
+        // Применяем системную тему с автоматическим отслеживанием изменений
+        ApplicationThemeManager.ApplySystemTheme();
+
+        Log.Debug("Тема приложения инициализирована (следование за системной)");
+    }
+
+    /// <summary>
+    /// Обновить тему приложения в соответствии с системной
+    /// </summary>
+    private static void UpdateThemeFromSystem()
+    {
+        // Применяем системную тему
+        ApplicationThemeManager.ApplySystemTheme();
+
+        Log.Debug("Тема приложения обновлена в соответствии с системной");
     }
 }

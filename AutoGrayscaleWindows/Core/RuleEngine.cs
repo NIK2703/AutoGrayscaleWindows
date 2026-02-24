@@ -249,10 +249,11 @@ public class RuleEngine : IDisposable
     /// </summary>
     private string GetCacheKey(WindowInfo windowInfo)
     {
-        // Используем AppId + WindowTitle как ключ, чтобы учитывать разные окна одного приложения
+        // Используем AppId + WindowTitle + WindowClass как ключ, чтобы учитывать разные окна одного приложения
         var appId = windowInfo.AppId ?? windowInfo.ProcessName ?? windowInfo.Handle.ToString();
         var title = windowInfo.WindowTitle ?? "";
-        return $"{appId}|{title}";
+        var windowClass = windowInfo.WindowClass ?? "";
+        return $"{appId}|{title}|{windowClass}";
     }
 
     /// <summary>

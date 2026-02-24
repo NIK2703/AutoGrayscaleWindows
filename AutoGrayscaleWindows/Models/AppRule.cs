@@ -37,7 +37,12 @@ public enum MatchTarget
     /// <summary>
     /// Сопоставление по заголовку окна
     /// </summary>
-    WindowTitle = 1
+    WindowTitle = 1,
+
+    /// <summary>
+    /// Сопоставление по классу окна
+    /// </summary>
+    WindowClass = 2
 }
 
 /// <summary>
@@ -167,16 +172,12 @@ public class AppRule
             return false;
 
         // В зависимости от типа цели проверяем разные параметры
-        if (MatchTarget == MatchTarget.WindowTitle)
+        return MatchTarget switch
         {
-            // Сопоставление по заголовку окна
-            return CheckWindowTitle(windowInfo.WindowTitle);
-        }
-        else
-        {
-            // Сопоставление по исполняемому файлу (по умолчанию)
-            return CheckIdentifier(windowInfo);
-        }
+            MatchTarget.WindowTitle => CheckWindowTitle(windowInfo.WindowTitle),
+            MatchTarget.WindowClass => CheckWindowClass(windowInfo.WindowClass),
+            _ => CheckIdentifier(windowInfo) // Executable по умолчанию
+        };
     }
 
     /// <summary>
@@ -245,6 +246,25 @@ public class AppRule
         bool matches = windowTitle.Contains(AppIdentifier, StringComparison.OrdinalIgnoreCase);
         Log.Debug("CheckWindowTitle: заголовок '{Title}' {Action} паттерн '{Pattern}' для правила {Name}",
             windowTitle, matches ? "содержит" : "не содержит", AppIdentifier, DisplayName);
+        return matches;
+    }
+
+    /// <summary>
+    /// Проверяет класс окна
+    /// </summary>
+    private bool CheckWindowClass(string windowClass)
+    {
+        if (string.IsNullOrEmpty(windowClass))
+        {
+            Log.Debug("CheckWindowClass: класс окна пуст, правило {Name} не сработает", DisplayName);
+            return false;
+        }
+
+        // Используем AppIdentifier как паттерн для класса окна
+        // MatchType всегда Contains
+        bool matches = windowClass.Contains(AppIdentifier, StringComparison.OrdinalIgnoreCase);
+        Log.Debug("CheckWindowClass: класс '{Class}' {Action} паттерн '{Pattern}' для правила {Name}",
+            windowClass, matches ? "содержит" : "не содержит", AppIdentifier, DisplayName);
         return matches;
     }
 

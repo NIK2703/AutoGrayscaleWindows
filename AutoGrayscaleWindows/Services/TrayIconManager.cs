@@ -19,8 +19,6 @@ public class TrayIconManager : IDisposable
 
     // Элементы меню для динамического обновления
     private MenuItem? _statusMenuItem;
-    private MenuItem? _toggleGrayscaleMenuItem;
-    private MenuItem? _togglePauseMenuItem;
     private MenuItem? _toggleMonitoringMenuItem;
     private MenuItem? _settingsMenuItem;
     private MenuItem? _exitMenuItem;
@@ -34,11 +32,6 @@ public class TrayIconManager : IDisposable
     /// Событие запроса на переключение grayscale
     /// </summary>
     public event EventHandler? ToggleGrayscaleRequested;
-
-    /// <summary>
-    /// Событие запроса на паузу/возобновление
-    /// </summary>
-    public event EventHandler? TogglePauseRequested;
 
     /// <summary>
     /// Событие запроса на переключение мониторинга

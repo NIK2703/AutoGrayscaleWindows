@@ -71,8 +71,8 @@ public class TrayIconManager : IDisposable
             // Двойной клик открывает настройки
             _taskbarIcon.TrayMouseDoubleClick += (_, _) => OpenSettingsRequested?.Invoke(this, EventArgs.Empty);
 
-            // Одиночный клик переключает grayscale
-            _taskbarIcon.TrayLeftMouseDown += (_, _) => ToggleGrayscaleRequested?.Invoke(this, EventArgs.Empty);
+            // Одиночный клик переключает мониторинг
+            _taskbarIcon.TrayLeftMouseDown += (_, _) => ToggleMonitoringRequested?.Invoke(this, EventArgs.Empty);
 
             Log.Information("TrayIconManager инициализирован");
         }

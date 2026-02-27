@@ -490,6 +490,17 @@ public partial class App : Application
         _configManager!.Config.IsEnabled = _isMonitoringEnabled;
         _configManager.Save();
         
+        // При отключении мониторинга также отключаем grayscale
+        if (!_isMonitoringEnabled && _filterController?.IsGrayscaleEnabled == true)
+        {
+            _filterController.DisableGrayscale();
+        }
+        // При включении мониторинга переоцениваем текущее окно
+        else if (_isMonitoringEnabled)
+        {
+            ForceReevaluateCurrentWindow();
+        }
+        
         // Обновляем UI главного окна
         if (_mainWindow != null)
         {

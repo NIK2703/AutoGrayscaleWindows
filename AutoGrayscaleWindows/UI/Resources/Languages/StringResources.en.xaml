@@ -23,6 +23,8 @@
     <system:String x:Key="ExecutableFile">Executable file</system:String>
     <system:String x:Key="WindowTitle">Window title</system:String>
     <system:String x:Key="WindowClass">Window class</system:String>
+    <system:String x:Key="Folder">Folder with executables</system:String>
+    <system:String x:Key="BrowseFolder">Select folder</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ Add rule</system:String>

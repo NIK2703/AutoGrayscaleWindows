@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using AutoGrayscaleWindows.Core;
 using AutoGrayscaleWindows.Models;
 using AutoGrayscaleWindows.Services;
+using AutoGrayscaleWindows.UI.Resources;
 using Microsoft.Win32;
 using Serilog;
 using Wpf.Ui.Controls;
@@ -36,6 +37,24 @@ public partial class MainWindow : FluentWindow
         _config = new AppConfig();
         _currentRules = new ObservableCollection<AppRule>();
         DataContext = this;
+        
+        // Устанавливаем иконку окна программно
+        SetAppIcon();
+    }
+    
+    /// <summary>
+    /// Устанавливает иконку приложения (аналогичную иконке в трее)
+    /// </summary>
+    private void SetAppIcon()
+    {
+        try
+        {
+            Icon = IconGenerator.CreateAppIconBitmap();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Не удалось установить иконку окна");
+        }
     }
 
     public void Initialize(
@@ -81,6 +100,13 @@ public partial class MainWindow : FluentWindow
 
         // Устанавливаем язык
         SetLanguageComboBox(_config.Language);
+
+        // Восстанавливаем размеры окна
+        if (_config.WindowWidth > 0 && _config.WindowHeight > 0)
+        {
+            Width = _config.WindowWidth;
+            Height = _config.WindowHeight;
+        }
 
         RulesDataGrid.ItemsSource = _currentRules;
     }
@@ -213,6 +239,7 @@ public partial class MainWindow : FluentWindow
         var executableFile = LocalizationManager.GetString("ExecutableFile");
         var windowTitle = LocalizationManager.GetString("WindowTitle");
         var windowClass = LocalizationManager.GetString("WindowClass");
+        var folder = LocalizationManager.GetString("Folder");
         var browseApp = LocalizationManager.GetString("BrowseApp");
         var deleteRule = LocalizationManager.GetString("DeleteRule");
         
@@ -241,7 +268,7 @@ public partial class MainWindow : FluentWindow
             factory.SetValue(ComboBox.BackgroundProperty, System.Windows.Media.Brushes.Transparent);
             factory.AddHandler(ComboBox.SelectionChangedEvent, new SelectionChangedEventHandler(RuleComboBox_SelectionChanged));
             
-            factory.SetValue(ComboBox.ItemsSourceProperty, new[] { executableFile, windowTitle, windowClass });
+            factory.SetValue(ComboBox.ItemsSourceProperty, new[] { executableFile, folder, windowTitle, windowClass });
             
             cellTemplate.VisualTree = factory;
             modeColumn.CellTemplate = cellTemplate;
@@ -439,31 +466,78 @@ public partial class MainWindow : FluentWindow
     {
         if (sender is System.Windows.Controls.Button button && button.Tag is AppRule rule)
         {
-            var dialog = new OpenFileDialog
+            if (rule.MatchTarget == MatchTarget.Folder)
             {
-                Title = "Выберите приложение",
-                Filter = "Исполняемые файлы (*.exe)|*.exe|Все файлы (*.*)|*.*",
-                CheckFileExists = true
-            };
+                // Диалог выбора папки
+                var dialog = new OpenFolderDialog
+                {
+                    Title = "Выберите папку",
+                    Multiselect = false
+                };
 
-            if (dialog.ShowDialog() == true)
+                if (dialog.ShowDialog() == true)
+                {
+                    rule.AppIdentifier = dialog.FolderName;
+                    
+                    // Обновляем отображение строки
+                    RulesDataGrid.Items.Refresh();
+                    SaveConfiguration();
+                }
+            }
+            else
             {
-                rule.AppIdentifier = dialog.FileName;
-                
-                // Обновляем отображение строки
-                RulesDataGrid.Items.Refresh();
-                SaveConfiguration();
+                // Диалог выбора файла (для Executable)
+                var dialog = new OpenFileDialog
+                {
+                    Title = "Выберите приложение",
+                    Filter = "Исполняемые файлы (*.exe)|*.exe|Все файлы (*.*)|*.*",
+                    CheckFileExists = true
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    rule.AppIdentifier = dialog.FileName;
+                    
+                    // Обновляем отображение строки
+                    RulesDataGrid.Items.Refresh();
+                    SaveConfiguration();
+                }
             }
         }
     }
 
     private void MainWindow_OnClosing(object sender, CancelEventArgs e)
     {
+        // Сохраняем размеры окна перед закрытием
+        SaveWindowSize();
+        
         // Если нужно сворачивать в трей вместо закрытия
         if (_minimizeToTray)
         {
             e.Cancel = true;
             Hide();
+        }
+    }
+
+    private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (_isLoading || _config == null) return;
+        
+        // Сохраняем размеры окна при изменении
+        SaveWindowSize();
+    }
+
+    private void SaveWindowSize()
+    {
+        if (_config == null || _configManager == null) return;
+        
+        // Сохраняем только если окно в нормальном состоянии
+        if (WindowState == WindowState.Normal)
+        {
+            _config.WindowWidth = Width;
+            _config.WindowHeight = Height;
+            _configManager.UpdateConfig(_config);
+            Log.Debug("Размеры окна сохранены: {Width}x{Height}", Width, Height);
         }
     }
 

@@ -8,10 +8,12 @@
         mc:Ignorable="d"
         Title="{DynamicResource AppTitle}"
         Height="580" Width="780"
+        MinHeight="400" MinWidth="600"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         ExtendsContentIntoTitleBar="True"
-        Closing="MainWindow_OnClosing">
+        Closing="MainWindow_OnClosing"
+        SizeChanged="MainWindow_SizeChanged">
     
     <Window.Resources>
         <!-- Конвертеры -->
@@ -244,6 +246,7 @@
                                                   Background="Transparent"
                                                   SelectionChanged="RuleComboBox_SelectionChanged">
                                             <ComboBoxItem Content="{DynamicResource ExecutableFile}"/>
+                                            <ComboBoxItem Content="{DynamicResource Folder}"/>
                                             <ComboBoxItem Content="{DynamicResource WindowTitle}"/>
                                             <ComboBoxItem Content="{DynamicResource WindowClass}"/>
                                         </ComboBox>

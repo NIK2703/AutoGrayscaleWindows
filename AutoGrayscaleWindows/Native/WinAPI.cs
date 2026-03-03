@@ -136,6 +136,7 @@ public static class WinAPI
     /// </summary>
     public const uint PROCESS_QUERY_INFORMATION = 0x0400;
     public const uint PROCESS_VM_READ = 0x0010;
+    public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
 
     #endregion
 
@@ -224,6 +225,48 @@ public static class WinAPI
             CloseHandle(hProcess);
         }
     }
+
+    /// <summary>
+    /// Получает полный путь к исполняемому файлу процесса
+    /// </summary>
+    public static string GetProcessExecutablePath(uint processId)
+    {
+        nint hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, processId);
+        if (hProcess == nint.Zero)
+        {
+            // Пробуем с более высокими правами
+            hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, processId);
+            if (hProcess == nint.Zero)
+                return string.Empty;
+        }
+
+        try
+        {
+            char[] buffer = new char[1024];
+            int size = buffer.Length;
+            if (QueryFullProcessImageName(hProcess, 0, buffer, ref size))
+            {
+                return new string(buffer, 0, size);
+            }
+            return string.Empty;
+        }
+        finally
+        {
+            CloseHandle(hProcess);
+        }
+    }
+
+    /// <summary>
+    /// Получает полный путь к исполняемому файлу процесса (альтернативный метод через GetModuleFileNameEx)
+    /// </summary>
+    [DllImport("psapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool GetModuleFileNameEx(nint hProcess, nint hModule, char[] lpFilename, int nSize);
+
+    /// <summary>
+    /// Получает полный путь к образу процесса
+    /// </summary>
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern bool QueryFullProcessImageName(nint hProcess, int dwFlags, char[] lpExeName, ref int lpdwSize);
 
     #endregion
 }

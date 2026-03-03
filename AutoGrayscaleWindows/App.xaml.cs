@@ -95,6 +95,9 @@ public partial class App : Application
             
             // Подписываемся на событие смены режима списка
             _mainWindow.ListModeChanged += (_, _) => ForceReevaluateCurrentWindow();
+
+            // Запускаем отслеживание изменений системной темы для главного окна
+            SystemThemeWatcher.Watch(_mainWindow);
             
             // Показываем окно только если не запущены в свёрнутом режиме
             if (!_startMinimized)
@@ -574,6 +577,9 @@ public partial class App : Application
 
         try
         {
+            // Отключаем grayscale при выходе из приложения
+            _filterController?.DisableGrayscale();
+
             // Остановка мониторинга
             _windowMonitor?.Dispose();
 
@@ -603,9 +609,9 @@ public partial class App : Application
     /// <summary>
     /// Инициализация темы приложения (следование за системной)
     /// </summary>
-    private static void InitializeTheme()
+    private void InitializeTheme()
     {
-        // Применяем системную тему с автоматическим отслеживанием изменений
+        // Применяем системную тему
         ApplicationThemeManager.ApplySystemTheme();
 
         Log.Debug("Тема приложения инициализирована (следование за системной)");

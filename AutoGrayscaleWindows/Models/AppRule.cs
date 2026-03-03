@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.RegularExpressions;
 using Serilog;
 
@@ -35,14 +36,19 @@ public enum MatchTarget
     Executable = 0,
 
     /// <summary>
+    /// Сопоставление по папке (все exe в папке и подпапках)
+    /// </summary>
+    Folder = 1,
+
+    /// <summary>
     /// Сопоставление по заголовку окна
     /// </summary>
-    WindowTitle = 1,
+    WindowTitle = 2,
 
     /// <summary>
     /// Сопоставление по классу окна
     /// </summary>
-    WindowClass = 2
+    WindowClass = 3
 }
 
 /// <summary>
@@ -176,8 +182,55 @@ public class AppRule
         {
             MatchTarget.WindowTitle => CheckWindowTitle(windowInfo.WindowTitle),
             MatchTarget.WindowClass => CheckWindowClass(windowInfo.WindowClass),
+            MatchTarget.Folder => CheckFolder(windowInfo.ExecutablePath),
             _ => CheckIdentifier(windowInfo) // Executable по умолчанию
         };
+    }
+
+    /// <summary>
+    /// Проверяет, находится ли исполняемый файл в указанной папке (включая вложенные папки)
+    /// </summary>
+    /// <param name="executablePath">Путь к исполняемому файлу</param>
+    /// <returns>true если файл находится в папке или её подпапках</returns>
+    private bool CheckFolder(string executablePath)
+    {
+        if (string.IsNullOrEmpty(executablePath))
+        {
+            Log.Debug("CheckFolder: путь к исполняемому файлу пуст, правило {Name} не сработает", DisplayName);
+            return false;
+        }
+
+        try
+        {
+            // Нормализуем пути для сравнения
+            var folderPath = Path.GetFullPath(AppIdentifier.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            var filePath = Path.GetFullPath(executablePath);
+
+            // Проверяем, что файл имеет расширение .exe
+            if (!filePath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Debug("CheckFolder: файл '{File}' не является .exe, правило {Name} не сработает", filePath, DisplayName);
+                return false;
+            }
+
+            // Проверяем, начинается ли путь файла с пути папки
+            // Добавляем разделитель к пути папки, чтобы избежать частичных совпадений
+            var folderWithSeparator = folderPath.EndsWith(Path.DirectorySeparatorChar.ToString()) 
+                ? folderPath 
+                : folderPath + Path.DirectorySeparatorChar;
+
+            bool matches = filePath.StartsWith(folderWithSeparator, StringComparison.OrdinalIgnoreCase) ||
+                           filePath.Equals(folderPath, StringComparison.OrdinalIgnoreCase);
+
+            Log.Debug("CheckFolder: файл '{File}' {Action} в папке '{Folder}' для правила {Name}",
+                filePath, matches ? "находится" : "не находится", folderPath, DisplayName);
+            return matches;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "CheckFolder: ошибка при проверке папки для правила {Name}", DisplayName);
+            return false;
+        }
     }
 
     /// <summary>

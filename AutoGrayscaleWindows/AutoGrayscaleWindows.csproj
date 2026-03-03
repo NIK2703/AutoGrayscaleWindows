@@ -13,6 +13,7 @@
     <Product>Auto Grayscale Windows</Product>
     <Description>Автоматическое управление режимом оттенков серого</Description>
     <Copyright>Copyright © 2024</Copyright>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

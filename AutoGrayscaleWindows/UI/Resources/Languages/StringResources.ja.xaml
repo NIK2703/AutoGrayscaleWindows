@@ -23,6 +23,8 @@
     <system:String x:Key="ExecutableFile">実行可能ファイル</system:String>
     <system:String x:Key="WindowTitle">ウィンドウタイトル</system:String>
     <system:String x:Key="WindowClass">ウィンドウクラス</system:String>
+    <system:String x:Key="Folder">実行ファイルのあるフォルダー</system:String>
+    <system:String x:Key="BrowseFolder">フォルダーを選択</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ ルールを追加</system:String>

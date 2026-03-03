@@ -127,6 +127,16 @@ public class AppConfig
     public string Language { get; set; } = "ru";
 
     /// <summary>
+    /// Ширина главного окна
+    /// </summary>
+    public double WindowWidth { get; set; } = 780;
+
+    /// <summary>
+    /// Высота главного окна
+    /// </summary>
+    public double WindowHeight { get; set; } = 580;
+
+    /// <summary>
     /// Дата создания конфигурации
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.Now;

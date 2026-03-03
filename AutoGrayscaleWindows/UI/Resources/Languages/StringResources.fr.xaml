@@ -23,6 +23,8 @@
     <system:String x:Key="ExecutableFile">Fichier exécutable</system:String>
     <system:String x:Key="WindowTitle">Titre de la fenêtre</system:String>
     <system:String x:Key="WindowClass">Classe de fenêtre</system:String>
+    <system:String x:Key="Folder">Dossier avec exécutables</system:String>
+    <system:String x:Key="BrowseFolder">Sélectionner un dossier</system:String>
     
     <!-- Buttons -->
     <system:String x:Key="AddRule">+ Ajouter une règle</system:String>

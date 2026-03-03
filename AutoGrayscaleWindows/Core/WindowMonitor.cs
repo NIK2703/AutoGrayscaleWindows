@@ -454,6 +454,9 @@ public class WindowMonitor : IDisposable
                 // Быстро получаем имя процесса через WinAPI (намного быстрее Process.GetProcessById)
                 info.ProcessName = WinAPI.GetProcessBaseName(processId);
                 
+                // Получаем полный путь к исполняемому файлу
+                info.ExecutablePath = WinAPI.GetProcessExecutablePath(processId);
+                
                 // Если не удалось получить через WinAPI, пробуем через Process
                 if (string.IsNullOrEmpty(info.ProcessName))
                 {
@@ -461,6 +464,19 @@ public class WindowMonitor : IDisposable
                     {
                         var process = Process.GetProcessById((int)processId);
                         info.ProcessName = process.ProcessName ?? "Unknown";
+                        
+                        // Пробуем получить путь через Process
+                        if (string.IsNullOrEmpty(info.ExecutablePath))
+                        {
+                            try
+                            {
+                                info.ExecutablePath = process.MainModule?.FileName ?? string.Empty;
+                            }
+                            catch
+                            {
+                                // Игнорируем ошибки доступа
+                            }
+                        }
                     }
                     catch
                     {

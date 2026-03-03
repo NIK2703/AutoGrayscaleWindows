@@ -23,6 +23,8 @@
     <system:String x:Key="ExecutableFile">Исполняемый файл</system:String>
     <system:String x:Key="WindowTitle">Заголовок окна</system:String>
     <system:String x:Key="WindowClass">Класс окна</system:String>
+    <system:String x:Key="Folder">Папка с исполняемыми</system:String>
+    <system:String x:Key="BrowseFolder">Выбрать папку</system:String>
     
     <!-- Кнопки -->
     <system:String x:Key="AddRule">+ Добавить правило</system:String>

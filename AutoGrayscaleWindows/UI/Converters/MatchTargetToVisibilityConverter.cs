@@ -8,7 +8,7 @@ namespace AutoGrayscaleWindows.Models
 {
     /// <summary>
     /// Конвертер для преобразования MatchTarget в Visibility
-    /// Показывает кнопку выбора файла только для режима Executable
+    /// Показывает кнопку выбора файла/папки для режимов Executable и Folder
     /// </summary>
     public class MatchTargetToVisibilityConverter : IValueConverter
     {
@@ -16,7 +16,9 @@ namespace AutoGrayscaleWindows.Models
         {
             if (value is MatchTarget matchTarget)
             {
-                return matchTarget == MatchTarget.Executable ? Visibility.Visible : Visibility.Collapsed;
+                return (matchTarget == MatchTarget.Executable || matchTarget == MatchTarget.Folder) 
+                    ? Visibility.Visible 
+                    : Visibility.Collapsed;
             }
             return Visibility.Visible;
         }
